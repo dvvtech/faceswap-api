@@ -34,6 +34,16 @@ def find_best_match(target_face, source_faces):
     return source_faces[int(np.argmax(sims))]
 
 
+@app.get("/")
+async def root():
+    return "Face Swap API is running. Use POST /face-swap to swap faces."
+
+
+@app.get("/health")
+async def health_check():
+    return {"status": "ok", "message": "Service is healthy"}
+
+
 @app.post("/face-swap")
 async def face_swap(
     generated: UploadFile = File(...),
