@@ -10,8 +10,8 @@ import uuid
 
 app = FastAPI()
 
-# init models (грузим один раз)777
-face_app = FaceAnalysis(name='buffalo_l')
+# init models (грузим один раз)
+face_app = FaceAnalysis(name='buffalo_l', providers=['CPUExecutionProvider'])
 face_app.prepare(ctx_id=-1)
 
 swapper = get_model('inswapper_128.onnx', providers=['CPUExecutionProvider'])
