@@ -31,25 +31,22 @@ jobs:
           push: true
           tags: ghcr.io/${{ github.repository }}:latest
 
-      - name: Prepare docker-compose content
-        id: compose
-        run: |
-          content=$(base64 -w 0 docker-compose.yml)
-          echo "content=$content" >> $GITHUB_OUTPUT
-
-      - name: Deploy to VM via SSH (Swarm mode)
-        uses: appleboy/ssh-action@v1.0.3
-        env:
-          COMPOSE_B64: ${{ steps.compose.outputs.content }}
+      - name: Copy docker-compose.yml to VM
+        uses: appleboy/scp-action@v0.1.7
         with:
           host: ${{ secrets.VM_HOST }}
           username: ${{ secrets.VM_USER }}
           key: ${{ secrets.VM_SSH_KEY }}
-          envs: COMPOSE_B64
+          source: "docker-compose.yml"
+          target: "/home/dvvtech/deploy/faceswap/"
+      
+      - name: Deploy to VM via SSH (Swarm mode)
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.VM_HOST }}
+          username: ${{ secrets.VM_USER }}
+          key: ${{ secrets.VM_SSH_KEY }}
           script: |
-            mkdir -p /home/dvvtech/deploy/faceswap
-            echo "$COMPOSE_B64" | base64 -d > /home/dvvtech/deploy/faceswap/docker-compose.yml
-            
             cd /home/dvvtech/deploy/faceswap
             
             echo "Pull latest image"
