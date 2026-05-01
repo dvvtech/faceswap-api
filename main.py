@@ -12,7 +12,7 @@ app = FastAPI()
 
 # init models (грузим один раз)
 face_app = FaceAnalysis(name='buffalo_l', providers=['CPUExecutionProvider'])
-face_app.prepare(ctx_id=-1)
+face_app.prepare(ctx_id=-1, det_size=(1024, 1024))
 
 swapper = get_model('inswapper_128.onnx', providers=['CPUExecutionProvider'])
 
